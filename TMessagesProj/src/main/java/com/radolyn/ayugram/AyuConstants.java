@@ -28,6 +28,7 @@ public class AyuConstants {
     public static final int MESSAGE_EDITED_NOTIFICATION = 6968;
     public static final int MESSAGES_DELETED_NOTIFICATION = 6969;
     public static final int DELETED_MEDIA_LOADED_NOTIFICATION = 6970;
+    public static final int DELETED_HISTORY_NOTIFICATION = 6971;
 
     public static final String AYU_DATABASE = "ayu-data";
     public static final String AYU_DATABASE_EXPORT = AYU_DATABASE + ".db";

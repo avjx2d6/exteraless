@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import androidx.collection.LongSparseArray;
 
+import com.radolyn.ayugram.AyuConstants;
 import com.radolyn.ayugram.database.entities.DeletedMessageFull;
 import com.radolyn.ayugram.database.entities.DeletedMessageReaction;
 import com.radolyn.ayugram.messages.AyuMessagesController;
@@ -175,6 +176,7 @@ public abstract class AyuHistoryHook {
 
             AndroidUtilities.runOnUIThread(() -> {
                 // MessagesController.getInstance(currentAccount).updateInterfaceWithMessages(dialogId, messageObjects, 0);
+                NotificationCenter.getInstance(currentAccount).postNotificationName(AyuConstants.DELETED_HISTORY_NOTIFICATION, dialogId, messageObjects);
                 NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.didReceiveNewMessages, dialogId, messageObjects, false, 0);
                 NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.replyMessagesDidLoad, dialogId, messageObjects, null);
             });

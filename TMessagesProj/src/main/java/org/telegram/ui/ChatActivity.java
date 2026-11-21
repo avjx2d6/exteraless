@@ -3394,6 +3394,7 @@ public class ChatActivity extends BaseFragment implements
             .add(NotificationCenter.joinedGroup)
             .add(AyuConstants.MESSAGES_DELETED_NOTIFICATION)
             .add(AyuConstants.DELETED_MEDIA_LOADED_NOTIFICATION)
+            .add(AyuConstants.DELETED_HISTORY_NOTIFICATION)
             .addGlobal(NotificationCenter.emojiLoaded)
             .addGlobal(NotificationCenter.invalidateMotionBackground)
             .addGlobal(NotificationCenter.didSetNewWallpapper)
@@ -22897,7 +22898,7 @@ public class ChatActivity extends BaseFragment implements
         }
         if (!doNotRemoveLoadIndex && !fragmentBeginToShow && !paused) {
             int[] alowedNotifications = new int[]{NotificationCenter.messagesDidLoad, NotificationCenter.chatInfoDidLoad, NotificationCenter.groupCallUpdated, NotificationCenter.dialogsNeedReload, NotificationCenter.scheduledMessagesUpdated,
-                    NotificationCenter.closeChats, NotificationCenter.botKeyboardDidLoad, NotificationCenter.userInfoDidLoad, NotificationCenter.pinnedInfoDidLoad, NotificationCenter.needDeleteDialog/*, NotificationCenter.botInfoDidLoad*/};
+                    NotificationCenter.closeChats, NotificationCenter.botKeyboardDidLoad, NotificationCenter.userInfoDidLoad, NotificationCenter.pinnedInfoDidLoad, NotificationCenter.needDeleteDialog, AyuConstants.DELETED_HISTORY_NOTIFICATION/*, NotificationCenter.botInfoDidLoad*/};
             if (transitionAnimationIndex == 0) {
                 transitionAnimationIndex = getNotificationCenter().setAnimationInProgress(transitionAnimationIndex, alowedNotifications);
                 AndroidUtilities.runOnUIThread(() -> getNotificationCenter().onAnimationFinish(transitionAnimationIndex), 800);
@@ -24521,7 +24522,6 @@ public class ChatActivity extends BaseFragment implements
                     return;
                 }
                 if (!arr.isEmpty() && arr.get(0).isAyuDeleted()) {
-                    processNewMessages(arr, false);
                     return;
                 }
                 if (!scheduled) {
@@ -27237,6 +27237,11 @@ public class ChatActivity extends BaseFragment implements
             }
         }
         // --- AyuGram hook (ayuDeleted)
+        else if (id == AyuConstants.DELETED_HISTORY_NOTIFICATION) {
+            if (!isInsideContainer && !isFeedSearch() && (Long) args[0] == dialog_id && (chatMode == MODE_DEFAULT || chatMode == MODE_SAVED || chatMode == MODE_SUGGESTIONS)) {
+                processNewMessages((ArrayList<MessageObject>) args[1], false);
+            }
+        }
         else if (id == AyuConstants.MESSAGES_DELETED_NOTIFICATION) {
             long dialogId = (Long) args[0];
             if (getDialogId() != dialogId && (ChatObject.isChannel(currentChat) || dialogId != 0)) {
@@ -30015,12 +30020,13 @@ public class ChatActivity extends BaseFragment implements
                 alowedNotifications = new int[]{
                         NotificationCenter.dialogsNeedReload, NotificationCenter.closeChats,
                         NotificationCenter.botKeyboardDidLoad, NotificationCenter.needDeleteDialog,
-                        NotificationCenter.messagesDidLoad
+                        NotificationCenter.messagesDidLoad, AyuConstants.DELETED_HISTORY_NOTIFICATION
                 };
             } else {
                 alowedNotifications = new int[]{
                         NotificationCenter.dialogsNeedReload, NotificationCenter.closeChats,
-                        NotificationCenter.botKeyboardDidLoad, NotificationCenter.needDeleteDialog
+                        NotificationCenter.botKeyboardDidLoad, NotificationCenter.needDeleteDialog,
+                        AyuConstants.DELETED_HISTORY_NOTIFICATION
                 };
             }
             openAnimationEnded = false;
